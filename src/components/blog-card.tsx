@@ -6,7 +6,7 @@ interface BlogPost {
   id: string;
   title: string;
   content: string;
-  time: string;
+  createdAt: Date;
   slug: string;
 }
 
@@ -33,7 +33,7 @@ export function BlogList({ blogs }: BlogListProps) {
           </div>
           <div className="flex items-center text-sm text-muted-foreground ml-4 shrink-0">
             <Calendar className="w-4 h-4 mr-2" />
-            <time>{new Date(blog.time).toLocaleDateString()}</time>
+            <time>{new Date(blog.createdAt).toLocaleDateString()}</time>
           </div>
         </Link>
       ))}

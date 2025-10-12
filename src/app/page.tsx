@@ -1,45 +1,14 @@
-'use client';
 import { BlogList } from '@/components/blog-card';
 import { ConnectSection } from '@/components/connect-section';
 import Greetings from '@/components/greetings';
 import { ProjectCard } from '@/components/project-card';
 import { Underline } from '@/components/ui/underline';
+import { getPosts, getProjects } from '@/lib/server/actions';
 
-export default function Home() {
-  const projects = [
-    {
-      title: 'E-Commerce Platform',
-      role: 'Full Stack Developer',
-      tools: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Stripe', 'Prisma'],
-      summary:
-        'Built a scalable e-commerce solution with real-time inventory management and secure payment processing to solve the challenge of handling high traffic volumes during sales events.',
-      outcome:
-        'Increased conversion rate by 35% and reduced cart abandonment by 28% through optimized performance and user experience improvements.',
-      imageUrl: '/images/ecommerce-project.jpg',
-      githubUrl: 'https://github.com/username/ecommerce-platform',
-      liveUrl: 'https://ecommerce-demo.vercel.app',
-    },
-  ];
-
-  const blogPosts = [
-    {
-      id: '1',
-      title: 'Getting Started with Next.js',
-      content:
-        'Learn how to build modern web applications with Next.js and React...',
-      time: '2024-01-15',
-      slug: 'getting-started-with-nextjs',
-    },
-    {
-      id: '2',
-      title: 'Mastering Tailwind CSS',
-      content:
-        'Advanced techniques and best practices for using Tailwind CSS in your projects...',
-      time: '2024-01-10',
-      slug: 'mastering-tailwind-css',
-    },
-  ];
-
+export default async function Home() {
+  const posts = await getPosts();
+  const projects = await getProjects();
+  console.log({ posts, projects });
   return (
     <main className="space-y-20 md:space-y-32 pb-20">
       {/* HERO SECTION */}
@@ -95,40 +64,44 @@ export default function Home() {
       </section>
 
       {/* PROJECTS SECTION */}
-      <section className="container mx-auto px-4 md:px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="space-y-2 mb-12">
-            <h2 className="text-3xl font-bold">My Projects</h2>
-            <Underline />
-          </div>
+      {Array.isArray(projects) && projects?.length > 0 && (
+        <section className="container mx-auto px-4 md:px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="space-y-2 mb-12">
+              <h2 className="text-3xl font-bold">My Projects</h2>
+              <Underline />
+            </div>
 
-          <div className="grid grid-cols-1 gap-8">
-            {projects.map((project, index) => (
-              <div
-                key={project.title}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <ProjectCard {...project} />
-              </div>
-            ))}
+            <div className="grid grid-cols-1 gap-8">
+              {projects.map((project, index) => (
+                <div
+                  key={project.title}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
+                  <ProjectCard {...project} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* BLOG SECTION */}
-      <section className="container mx-auto px-4 md:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="space-y-2 mb-8">
-            <h2 className="text-3xl font-bold">Blogs</h2>
-            <Underline />
-            <p className="text-xl text-muted-foreground">
-              Thoughts, tutorials, and insights from my development journey.
-            </p>
+      {Array.isArray(posts) && posts?.length && (
+        <section className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-2 mb-8">
+              <h2 className="text-3xl font-bold">Blogs</h2>
+              <Underline />
+              <p className="text-xl text-muted-foreground">
+                Thoughts, tutorials, and insights from my development journey.
+              </p>
+            </div>
+            <BlogList blogs={posts} />
           </div>
-          <BlogList blogs={blogPosts} />
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CONNECT SECTION */}
       <ConnectSection />

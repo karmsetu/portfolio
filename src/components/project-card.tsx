@@ -1,7 +1,5 @@
 // components/project-card.tsx
-'use client';
 
-import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -19,10 +17,10 @@ interface ProjectCardProps {
   tools: string[];
   summary: string;
   outcome: string;
-  imageUrl: string;
-  githubUrl?: string;
-  liveUrl?: string;
-  caseStudyUrl?: string;
+  imageUrl: string | null;
+  githubUrl?: string | null;
+  liveUrl?: string | null;
+  caseStudyUrl?: string | null;
 }
 
 export function ProjectCard({
@@ -36,14 +34,10 @@ export function ProjectCard({
   liveUrl,
   caseStudyUrl,
 }: ProjectCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <Card
       className="group relative overflow-hidden border-2 bg-background transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/20
                  flex flex-col lg:flex-row h-full"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -51,7 +45,7 @@ export function ProjectCard({
       {/* Image container - Full width on mobile, 40% on desktop */}
       <div className="relative lg:w-2/5 h-48 lg:h-auto overflow-hidden">
         <Image
-          src={imageUrl}
+          src={imageUrl || 'https://placehold.co/600x400'}
           alt={title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -111,8 +105,6 @@ export function ProjectCard({
                 className="text-xs transform transition-all duration-300 hover:scale-105"
                 style={{
                   animationDelay: `${index * 100}ms`,
-                  transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
-                  opacity: isHovered ? 1 : 0.7,
                 }}
               >
                 {tool}
