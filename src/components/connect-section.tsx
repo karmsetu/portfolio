@@ -59,25 +59,25 @@ export function ConnectSection() {
   const socialLinks = [
     {
       name: 'Email',
-      href: 'mailto:your.email@example.com',
+      href: 'mailto:karmsetu8@gmail.com',
       icon: Mail,
       color: 'hover:text-red-600',
     },
     {
       name: 'X (Twitter)',
-      href: 'https://x.com/yourusername',
+      href: 'https://x.com/karmsetu',
       icon: Twitter,
       color: 'hover:text-black',
     },
     {
       name: 'LinkedIn',
-      href: 'https://linkedin.com/in/yourusername',
+      href: '',
       icon: Linkedin,
       color: 'hover:text-blue-600',
     },
     {
       name: 'GitHub',
-      href: 'https://github.com/yourusername',
+      href: 'https://github.com/karmsetu/',
       icon: Github,
       color: 'hover:text-gray-600',
     },
@@ -159,12 +159,12 @@ export function ConnectSection() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 border rounded-lg hover:bg-accent transition-colors group"
+                      className={`flex items-center gap-3 p-4 border rounded-lg ${social.color} transition-colors group cursor-alias`}
                     >
                       <social.icon
                         className={`w-5 h-5 transition-colors ${social.color}`}
                       />
-                      <span className="font-medium">{social.name}</span>
+                      <span className={`font-medium `}>{social.name}</span>
                     </a>
                   ))}
                 </div>
