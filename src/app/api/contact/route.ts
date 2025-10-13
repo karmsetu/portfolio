@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { connectPostSchema } from '@/lib/validators';
+import { sanitizePlainText } from '@/lib/sanitize';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
     const contactMessage = await prisma.contactMessage.create({
       data: {
         email,
-        message,
+        message: sanitizePlainText(message),
       },
     });
 

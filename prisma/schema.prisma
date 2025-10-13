@@ -28,6 +28,8 @@ model Post {
   // URL-friendly version of the title for routing
   // @unique = ensures no duplicate slugs
   slug      String   @unique
+
+  tags        String[] // Array of strings
   
   // Controls visibility - false=draft, true=published
   // @default(false) = posts start as drafts
