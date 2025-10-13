@@ -138,7 +138,12 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchProjects} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={fetchProjects}
+            disabled={loading}
+            data-accesskey={'r'}
+          >
             <RefreshCw
               className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`}
             />
@@ -146,7 +151,7 @@ export default function ProjectsPage() {
           </Button>
 
           <Link href="/dashboard/projects/add">
-            <Button>
+            <Button data-accesskey={'N'}>
               <Plus className="w-4 h-4 mr-2" />
               New Project
             </Button>

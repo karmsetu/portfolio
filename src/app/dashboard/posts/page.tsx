@@ -159,7 +159,12 @@ export default function PostsPage() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchPosts} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={fetchPosts}
+            disabled={loading}
+            data-accesskey={'r'}
+          >
             <RefreshCw
               className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`}
             />
@@ -167,7 +172,7 @@ export default function PostsPage() {
           </Button>
 
           <Link href="/dashboard/posts/create">
-            <Button>
+            <Button data-accesskey={'N'}>
               <Plus className="w-4 h-4 mr-2" />
               New Post
             </Button>

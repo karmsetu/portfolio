@@ -14,17 +14,32 @@ import {
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
-  { name: 'Posts', href: '/dashboard/posts', icon: FileText },
-  { name: 'Projects', href: '/dashboard/projects', icon: Briefcase },
+  {
+    name: 'Overview',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+    accessKey: 'O',
+  },
+  {
+    name: 'Messages',
+    href: '/dashboard/messages',
+    icon: MessageSquare,
+    accessKey: 'M',
+  },
+  { name: 'Posts', href: '/dashboard/posts', icon: FileText, accessKey: 'P' },
+  {
+    name: 'Projects',
+    href: '/dashboard/projects',
+    icon: Briefcase,
+    accessKey: 'P',
+  },
 ];
 
 export function DashboardNav() {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const NavLinks = () => (
+  const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => (
     <div className="space-y-1">
       {navigation.map((item) => {
         const Icon = item.icon;
@@ -40,6 +55,7 @@ export function DashboardNav() {
                 ? 'bg-blue-50 text-blue-700 border border-blue-200'
                 : 'text-muted-foreground hover:text-foreground hover:bg-accent'
             }`}
+            data-accesskey={isDesktop ? item.accessKey : ''}
           >
             <Icon className="w-4 h-4" />
             {item.name}
@@ -83,7 +99,7 @@ export function DashboardNav() {
         }`}
       >
         <nav className="p-6 h-full overflow-y-auto">
-          <NavLinks />
+          <NavLinks isDesktop={false} />
         </nav>
       </div>
 
@@ -91,7 +107,7 @@ export function DashboardNav() {
       <nav className="hidden lg:block w-64 bg-background border-r p-6 fixed left-0 top-0 bottom-0 overflow-y-auto">
         <div className="pt-6">
           <h1 className="text-xl font-bold mb-6">Dashboard</h1>
-          <NavLinks />
+          <NavLinks isDesktop={true} />
         </div>
       </nav>
 
