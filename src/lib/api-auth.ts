@@ -16,8 +16,6 @@ export async function protectAPI(request: Request) {
     };
   }
 
-  console.log({ ALLOWED_GITHUB_EMAIL, ALLOWED_GITHUB_IDS, session });
-
   if (
     ALLOWED_GITHUB_EMAIL.includes(session.user.email) &&
     ALLOWED_GITHUB_IDS.includes(session.user.name)

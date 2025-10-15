@@ -61,7 +61,6 @@ export default function PostsPage() {
       }
 
       const data: Post[] = await response.json();
-      console.log({ data });
 
       setPosts(data);
     } catch (error) {

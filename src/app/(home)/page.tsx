@@ -8,7 +8,6 @@ import { getPosts, getProjects } from '@/lib/server/actions';
 export default async function Home() {
   const posts = await getPosts();
   const projects = await getProjects();
-  console.log({ posts, projects });
   return (
     <main className="space-y-20 md:space-y-32 pb-20">
       {/* HERO SECTION */}

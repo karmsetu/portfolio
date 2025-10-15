@@ -36,11 +36,6 @@ export default async function DashboardLayout({
 const checkUserValidity = (
   session: Awaited<ReturnType<typeof auth.api.getSession>>
 ) => {
-  console.log({
-    ALLOWED_GITHUB_EMAILS,
-    ALLOWED_GITHUB_IDS,
-    session: session?.user,
-  });
   if (
     ALLOWED_GITHUB_IDS.includes(session!.user.name) &&
     ALLOWED_GITHUB_EMAILS.includes(session!.user.email)

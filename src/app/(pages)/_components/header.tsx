@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 
 export const Header = () => {
   const pathname = usePathname();
-  console.log(pathname);
   const isBlogPost = pathname.split('/').length > 2;
   return (
     <>

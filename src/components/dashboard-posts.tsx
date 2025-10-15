@@ -48,7 +48,6 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
         setPost(data.post);
-        console.log({ data });
       } catch (error) {
         console.error(error);
         toast.error('Failed to fetch post');
@@ -108,7 +107,6 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
 
       await response.json();
 
-      console.log('Post data:', post);
       toast.success(
         isEditing ? 'Post updated successfully!' : 'Post created successfully!'
       );
@@ -123,7 +121,7 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
 
   const handlePreview = () => {
     // Save draft and open preview
-    console.log('Opening preview with data:', post);
+    // TODO: preview
     toast.info('Preview functionality coming soon!');
   };
 

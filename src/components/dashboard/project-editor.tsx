@@ -59,7 +59,6 @@ export function CreateProjectForm({ isEditing }: { isEditing: boolean }) {
         }
 
         setFormData(data);
-        console.log({ data });
       } catch (error) {
         console.error(error);
         toast.error('Failed to fetch post');
