@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/card';
 import { Search, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 interface Message {
   id: string;
@@ -163,7 +164,9 @@ export default function MessagesPage() {
                       </div>
                     </TableCell>
                     <TableCell className="max-w-md">
-                      <p className="truncate">{message.message}</p>
+                      <Link href={`messages/${message.id}`}>
+                        <p className="truncate">{message.message}</p>
+                      </Link>
                     </TableCell>
                     <TableCell>
                       {new Date(message.createdAt).toLocaleDateString()}
