@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { postUpdateValidator } from '@/lib/validators';
 import { NextRequest, NextResponse } from 'next/server';
 import slugger from 'slug';
+import { protectAPI } from '@/lib/api-auth';
 
 interface RouteParams {
   params: {
@@ -34,6 +35,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     const { id } = await params;
     const json = await request.json();
 
@@ -90,6 +94,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     const { id } = await params;
 
     // Check if post exists

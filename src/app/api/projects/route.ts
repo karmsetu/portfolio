@@ -1,6 +1,8 @@
 // app/api/projects/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { createProjectSchema } from '@/lib/validators';
+import { protectAPI } from '@/lib/api-auth';
 
 export async function GET() {
   try {
@@ -22,7 +24,20 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
+    const validatedResult = await createProjectSchema.safeParseAsync(
+      await request.json()
+    );
+
+    if (!validatedResult.success)
+      return NextResponse.json(
+        { error: validatedResult.error },
+        { status: 400 }
+      );
+
+    const body = validatedResult.data;
 
     const project = await prisma.project.create({
       data: {

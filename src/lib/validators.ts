@@ -46,3 +46,15 @@ export const createPostSchema = z.object({
 });
 
 export const postUpdateValidator = createPostSchema.partial();
+
+export const createProjectSchema = z.object({
+  title: z.string().nonempty(),
+  description: z.string().nonempty(),
+  role: z.string().nonempty(),
+  tools: z.string().nonempty().array(),
+  summary: z.string().nonempty(),
+  outcome: z.string().nonempty(),
+  imageUrl: z.string().optional(),
+  githubUrl: z.string().optional(),
+  liveUrl: z.string().optional(),
+});

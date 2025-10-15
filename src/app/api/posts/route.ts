@@ -1,4 +1,5 @@
 // app/api/posts/route.ts
+import { protectAPI } from '@/lib/api-auth';
 import { prisma } from '@/lib/db';
 import { sanitizeMarkdown } from '@/lib/sanitize';
 import { createPostSchema } from '@/lib/validators';
@@ -21,8 +22,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     const reqBody = await request.json();
-    console.log(reqBody);
     const validatedSchema = await createPostSchema.safeParseAsync(reqBody);
     if (!validatedSchema.success)
       return NextResponse.json(

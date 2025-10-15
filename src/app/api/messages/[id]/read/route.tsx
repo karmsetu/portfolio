@@ -2,12 +2,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { Prisma } from '@/generated/prisma';
+import { protectAPI } from '@/lib/api-auth';
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     const { id } = params;
 
     // Validate ID

@@ -1,6 +1,7 @@
 // app/api/projects/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { protectAPI } from '@/lib/api-auth';
 
 interface Params {
   params: {
@@ -32,6 +33,9 @@ export async function GET(request: Request, { params }: Params) {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     const body = await request.json();
 
     const project = await prisma.project.update({
@@ -64,6 +68,9 @@ export async function PUT(request: Request, { params }: Params) {
 
 export async function DELETE(request: Request, { params }: Params) {
   try {
+    const result = await protectAPI(request);
+
+    if (result.error) return result.error;
     await prisma.project.delete({
       where: {
         id: params.id,
