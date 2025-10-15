@@ -134,20 +134,29 @@ export function ProjectCard({
         </CardContent>
 
         <CardFooter className="pt-0 flex-shrink-0">
-          <div className="flex gap-3 w-full">
+          <div className="flex items-center gap-5 w-full">
             {githubUrl && (
-              <Button variant="ghost" size="sm" className="flex-1" asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="transform translate-y-4 group-hover:translate-y-0 opacity-100 group-hover:opacity-100 transition-all duration-300 delay-200"
+                asChild
+              >
                 <a href={githubUrl} target="_blank" rel="noopener noreferrer">
                   <Github className="w-4 h-4 mr-2" />
-                  GitHub
+                  Code
                 </a>
               </Button>
             )}
             {liveUrl && (
-              <Button size="sm" className="flex-1" asChild>
+              <Button
+                size="sm"
+                className="transform translate-y-4 group-hover:translate-y-0 opacity-100 group-hover:opacity-100 transition-all duration-300 delay-100"
+                asChild
+              >
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  Live Site
+                  Live Demo
                 </a>
               </Button>
             )}

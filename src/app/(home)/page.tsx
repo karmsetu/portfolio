@@ -24,7 +24,7 @@ export default async function Home() {
                 </span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-muted-foreground">
-                A web developer
+                A web and mobile app developer
               </p>
             </div>
             <div className="flex justify-center lg:justify-end">
