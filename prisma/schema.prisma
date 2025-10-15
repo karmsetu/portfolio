@@ -17,28 +17,22 @@ datasource db {
 model Post {
   // Unique identifier for the post
   // @id = Primary key, @default(cuid()) = generates unique ID
-  id        String   @id @default(cuid()) @map("_id")
-  
+  id      String @id @default(cuid()) @map("_id")
   // Main title of the blog post
-  title     String
-  
+  title   String
   // The main content/body of the blog post
-  content   String
-  
+  content String
   // URL-friendly version of the title for routing
   // @unique = ensures no duplicate slugs
-  slug      String   @unique
+  slug    String @unique
 
-  tags        String[] // Array of strings
-  
+  tags      String[] // Array of strings
   // Controls visibility - false=draft, true=published
   // @default(false) = posts start as drafts
   published Boolean  @default(false)
-  
   // Auto-sets when post is created
   // @default(now()) = sets to current timestamp
   createdAt DateTime @default(now())
-  
   // Auto-updates when post is modified
   // @updatedAt = automatically updates on changes
   updatedAt DateTime @updatedAt
@@ -51,39 +45,28 @@ model Post {
 model Project {
   // Unique identifier for the project
   id          String   @id @default(cuid()) @map("_id")
-  
   // Project name/title
   title       String
-  
   // Brief overview of the project
   description String
-  
   // Your role in the project (e.g., "Full Stack Developer")
   role        String
-  
   // Array of technologies/tools used
   // String[] = stores as array of strings in database
   tools       String[]
-  
   // Detailed explanation of the project and challenges solved
   summary     String
-  
   // Results/impact of the project (e.g., "Increased conversion by 35%")
   outcome     String
-  
   // Project thumbnail/image URL
   // String? = optional field (can be null)
   imageUrl    String?
-  
   // GitHub repository link
   githubUrl   String?
-  
   // Live demo/production URL
   liveUrl     String?
-  
   // When project was added to portfolio
   createdAt   DateTime @default(now())
-  
   // When project was last updated
   updatedAt   DateTime @updatedAt
 
@@ -91,8 +74,8 @@ model Project {
   @@map("projects")
 }
 
-
 // prisma/schema.prisma
+
 model ContactMessage {
   id        String   @id @default(cuid()) @map("_id")
   email     String
@@ -101,4 +84,64 @@ model ContactMessage {
   read      Boolean  @default(false)
 
   @@map("contact_messages")
+}
+
+model User {
+  id            String    @id @map("_id")
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
 }
