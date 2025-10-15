@@ -1,7 +1,6 @@
 import { prisma as db } from '@/lib/db';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
-import Link from 'next/link';
-import { format, parseISO } from 'date-fns';
+import { Calendar, Clock, Tag } from 'lucide-react';
+import { format } from 'date-fns';
 import { notFound } from 'next/navigation';
 
 export default async function BlogPage({

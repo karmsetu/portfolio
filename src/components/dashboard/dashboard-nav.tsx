@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   MessageSquare,
   FileText,
@@ -11,7 +11,11 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react';
+import { Button } from '../ui/button';
+import { authClient } from '@/lib/auth-client';
+import { toast } from 'sonner';
 
 const navigation = [
   {
@@ -37,7 +41,24 @@ const navigation = [
 
 export function DashboardNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      authClient.signOut();
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+      // You can show a toast notification here
+      toast.error((error as Error).message || 'Error While Signing Out');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => (
     <div className="space-y-1">
@@ -62,6 +83,19 @@ export function DashboardNav() {
           </Link>
         );
       })}
+
+      {/* Logout Button */}
+      <Button
+        onClick={() => {
+          handleLogout();
+          setIsMobileOpen(false);
+        }}
+        variant={'outline'}
+        disabled={isLoggingOut}
+      >
+        <LogOut className="w-4 h-4" />
+        {isLoggingOut ? 'Logging out...' : 'Logout'}
+      </Button>
     </div>
   );
 
@@ -98,16 +132,20 @@ export function DashboardNav() {
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <nav className="p-6 h-full overflow-y-auto">
-          <NavLinks isDesktop={false} />
+        <nav className="p-6 h-full flex flex-col">
+          <div className="flex-1">
+            <NavLinks isDesktop={false} />
+          </div>
         </nav>
       </div>
 
       {/* Desktop Sidebar */}
       <nav className="hidden lg:block w-64 bg-background border-r p-6 fixed left-0 top-0 bottom-0 overflow-y-auto">
-        <div className="pt-6">
-          <h1 className="text-xl font-bold mb-6">Dashboard</h1>
-          <NavLinks isDesktop={true} />
+        <div className="pt-6 h-full flex flex-col">
+          <div>
+            <h1 className="text-xl font-bold mb-6">Dashboard</h1>
+            <NavLinks isDesktop={true} />
+          </div>
         </div>
       </nav>
 

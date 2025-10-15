@@ -26,4 +26,4 @@ export interface CreateProjectInput {
   liveUrl?: string;
 }
 
-export interface UpdateProjectInput extends Partial<CreateProjectInput> {}
+export type UpdateProjectInput = Partial<CreateProjectInput>;

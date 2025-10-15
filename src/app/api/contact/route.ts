@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const { email, message } = validatedSchema.data;
 
     // Save to database
-    const contactMessage = await prisma.contactMessage.create({
+    await prisma.contactMessage.create({
       data: {
         email,
         message: sanitizePlainText(message),
@@ -46,6 +46,7 @@ export async function GET() {
     });
     return NextResponse.json(posts);
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: 'Failed to fetch posts' },
       { status: 500 }

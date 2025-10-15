@@ -1,5 +1,4 @@
 import { ProjectCard } from '@/components/project-card';
-import { Underline } from '@/components/ui/underline';
 import { prisma as db } from '@/lib/db';
 import { Rocket } from 'lucide-react';
 
@@ -24,8 +23,8 @@ export default async function ProjectsPage() {
               Projects Coming Soon
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              I'm currently working on some exciting projects. Stay tuned for
-              updates!
+              I&apos;m currently working on some exciting projects. Stay tuned
+              for updates!
             </p>
           </div>
         </div>

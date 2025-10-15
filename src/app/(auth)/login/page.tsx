@@ -12,6 +12,7 @@ export default function LoginPage() {
     try {
       authClient.signIn.social({ provider: 'github' });
     } catch (error) {
+      console.error(error);
       toast(' Error while signing in...');
     } finally {
       setIsPending(false);

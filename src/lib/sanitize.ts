@@ -65,7 +65,7 @@ export async function sanitizeMarkdown(markdown: string): Promise<string> {
   }
 
   // Remove null bytes and excessive newlines
-  let cleaned = markdown.replace(/\0/g, '').trim();
+  const cleaned = markdown.replace(/\0/g, '').trim();
 
   // Convert markdown to HTML
   const rawHtml = await marked.parse(cleaned);

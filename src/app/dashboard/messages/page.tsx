@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Search, Mail, Eye, Trash2 } from 'lucide-react';
+import { Search, Eye, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Message {
@@ -37,27 +37,25 @@ export default function MessagesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getMessages();
-  }, [search]);
+    const getMessages = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/contact`);
 
-  const getMessages = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/contact`);
-
-      if (response.ok) {
-        const result = await response.json();
-        setMessages(result);
-        console.log({ messages });
-      } else {
-        toast.error('Failed to load messages');
+        if (response.ok) {
+          const result = await response.json();
+          setMessages(result);
+        } else {
+          toast.error('Failed to load messages');
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+    getMessages();
+  }, []);
 
   const filteredMessages = messages.filter(
     (message) =>
@@ -160,10 +158,7 @@ export default function MessagesPage() {
                     <TableCell>
                       <div>
                         <div className="font-medium">
-                          {message.name || 'Anonymous'}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {message.email}
+                          {message.email || 'Anonymous'}
                         </div>
                       </div>
                     </TableCell>

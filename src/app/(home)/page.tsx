@@ -49,7 +49,7 @@ export default async function Home() {
 
           <div className="space-y-4 text-lg leading-relaxed">
             <p>
-              I'm a self-taught web developer specializing in{' '}
+              I&apos;m a self-taught web developer specializing in{' '}
               <strong>Next.js</strong> and the <strong>MERN stack</strong> for
               web development,
               <strong> React Native (Expo)</strong> for mobile app development,

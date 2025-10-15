@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Save, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Post {
@@ -42,25 +42,25 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
   });
 
   useEffect(() => {
+    const getPost = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/posts/${id}`);
+        const data = await response.json();
+        setPost(data.post);
+        console.log({ data });
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to fetch post');
+      } finally {
+        setIsLoading(false);
+      }
+    };
     if (isEditing) {
       getPost();
     }
-  }, []);
+  }, [isEditing, id]);
 
-  const getPost = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/posts/${id}`);
-      const data = await response.json();
-      setPost(data.post);
-      console.log({ data });
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to fetch post');
-    } finally {
-      setIsLoading(false);
-    }
-  };
   // Check if we're editing an existing post (you can get this from URL params or context)
 
   const handleTitleChange = (value: string) => {
@@ -106,7 +106,7 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
         });
       }
 
-      const result = await response.json();
+      await response.json();
 
       console.log('Post data:', post);
       toast.success(
@@ -114,6 +114,7 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
       );
       router.push('/dashboard/posts');
     } catch (error) {
+      console.error(error);
       toast.error('Failed to save post');
     } finally {
       setIsLoading(false);

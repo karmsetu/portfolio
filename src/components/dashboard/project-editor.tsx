@@ -40,27 +40,37 @@ export function CreateProjectForm({ isEditing }: { isEditing: boolean }) {
   const id = params.id as string;
 
   useEffect(() => {
+    const getProjects = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/projects/${id}`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch project: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Validate the data structure matches your form
+        if (data && typeof data === 'object') {
+          setFormData(data);
+        } else {
+          throw new Error('Invalid project data received');
+        }
+
+        setFormData(data);
+        console.log({ data });
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to fetch post');
+      } finally {
+        setLoading(false);
+      }
+    };
     if (isEditing) {
       getProjects();
     }
-  }, []);
-
-  const getProjects = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/projects/${id}`);
-      const data = await response.json();
-      console.log({ data });
-
-      setFormData(data);
-      console.log({ data });
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to fetch post');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isEditing, id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
