@@ -16,7 +16,7 @@ export default function Nav() {
   ];
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-1.5">
       <nav className="flex items-center justify-between border border-gray-700/30 px-6 py-3 shadow-xl/20 font-light rounded-3xl bg-background/80 backdrop-blur-sm w-full max-w-md">
         {/* Logo */}
         <Link
