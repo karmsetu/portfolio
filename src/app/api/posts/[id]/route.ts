@@ -4,6 +4,7 @@ import { postUpdateValidator } from '@/lib/validators';
 import { NextRequest, NextResponse } from 'next/server';
 import slugger from 'slug';
 import { protectAPI } from '@/lib/api-auth';
+import { deleteImage } from '@/utils/uploadthing-server';
 
 interface RouteParams {
   params: {
@@ -62,6 +63,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       slug = slugger(validatedData.title);
     }
 
+    // check if the image URL has changed
+    /* ? conditions: 
+     ? condition #1: previously post had an image, and now it doesn't
+     ? condition #2: previous post didn't had an image and now it does 
+     ? condition #3: previous post had different image then now
+    */
+    if (validatedData.featuredImage! && existingPost.featuredImage) {
+      await deleteImage(existingPost.featuredImage);
+    } else if (
+      existingPost.featuredImage &&
+      validatedData.featuredImage !== existingPost.featuredImage
+    ) {
+      await deleteImage(existingPost.featuredImage);
+    }
+
     // Update post
     const post = await prisma.post.update({
       where: { id },
@@ -106,6 +122,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     if (!existingPost) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    // deleted image
+    if (existingPost.featuredImage) {
+      const imgDeletionResult = await deleteImage(existingPost.featuredImage);
+      if (!imgDeletionResult) throw new Error('Unable to delete Image');
     }
 
     // Delete post

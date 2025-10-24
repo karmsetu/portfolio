@@ -37,6 +37,8 @@ model Post {
   // @updatedAt = automatically updates on changes
   updatedAt DateTime @updatedAt
 
+  featuredImage String?
+
   // Maps this model to "posts" table in database
   // Prevents Prisma from using "Post" as table name
   @@map("posts")

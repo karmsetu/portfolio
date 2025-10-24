@@ -43,6 +43,7 @@ export const createPostSchema = z.object({
       // Remove empty strings and ensure uniqueness
       return Array.from(new Set(tags.filter((tag) => tag.length > 0)));
     }),
+  featuredImage: z.url().optional(),
 });
 
 export const postUpdateValidator = createPostSchema.partial();

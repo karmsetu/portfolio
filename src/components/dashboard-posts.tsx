@@ -1,7 +1,6 @@
-// app/components/dashboard/dashboard-posts.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +14,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { useUploadThing } from '@/utils/uploadthing'; // ✅ add this
+import { createPostSchema } from '@/lib/validators';
+import { formatZodErrors } from '@/utils/zod';
 
 interface Post {
   id: string;
@@ -25,6 +27,7 @@ interface Post {
   published: boolean;
   tags?: string[];
   createdAt: string;
+  featuredImage?: string;
 }
 
 type PostEditorProp = { isEditing: boolean };
@@ -40,6 +43,29 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
     published: false,
     tags: [],
   });
+  const [postError, setPostError] = useState({
+    title: '',
+    content: '',
+    tags: '',
+    featuredImage: '',
+  });
+  const [image, setImage] = useState<{ src: File[]; url: string } | null>(null);
+  const inputSchema = createPostSchema.omit({ published: true });
+
+  const ImageInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { startUpload, isUploading } = useUploadThing('imageUploader', {
+    onClientUploadComplete: (res) => {
+      const url = res?.[0]?.ufsUrl;
+      if (url) {
+        setPost((prev) => ({ ...prev, featuredImage: url }));
+        toast.success('Image uploaded successfully!');
+      }
+    },
+    onUploadError: (err) => {
+      toast.error(`Upload failed: ${err.message}`);
+    },
+  });
 
   useEffect(() => {
     const getPost = async () => {
@@ -47,7 +73,17 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
         setIsLoading(true);
         const response = await fetch(`/api/posts/${id}`);
         const data = await response.json();
-        setPost(data.post);
+        setPost({
+          content: data.post.content,
+          published: data.post.published,
+          title: data.post.title,
+          featuredImage: data.post.featuredImage,
+          tags: data.post.tags,
+        });
+        setImage({ src: [], url: data.post.featuredImage as string });
+        // if(ImageInputRef) {
+        //   ImageInputRef.current?.files = new FileList()
+        // }
       } catch (error) {
         console.error(error);
         toast.error('Failed to fetch post');
@@ -60,12 +96,29 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
     }
   }, [isEditing, id]);
 
-  // Check if we're editing an existing post (you can get this from URL params or context)
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) setImage(null);
+    else {
+      const file = Array.from(e.target.files)[0];
+      setImage({ src: [file], url: URL.createObjectURL(file) });
+    }
+  };
 
-  const handleTitleChange = (value: string) => {
+  const handleContentChange = (field: string, value: string) => {
+    const validatedResult = inputSchema
+      .pick({ [field]: true })
+      .safeParse({ [field]: value });
+    if (!validatedResult.success) {
+      const message = JSON.parse(validatedResult.error.message)[0].message;
+
+      setPostError((prev) => ({
+        ...prev,
+        [field]: message,
+      }));
+    } else setPostError((prev) => ({ ...prev, [field]: '' }));
     setPost((prev) => ({
       ...prev,
-      title: value,
+      [field]: value,
     }));
   };
 
@@ -73,57 +126,65 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-
     try {
+      // upload image in uploadthing
+      let imageURL: string = '';
+      if (image && image.src.length > 0) {
+        const check = await startUpload(image.src);
+        if (check) {
+          imageURL = check[0].ufsUrl;
+        }
+      }
+
       let response;
+      const body = JSON.stringify({
+        title: post.title,
+        content: post.content,
+        published: post.published,
+        tags: post.tags,
+        featuredImage: imageURL,
+      });
+
+      // validate the input
+      const validatedResult = inputSchema.safeParse(JSON.parse(body));
+      if (!validatedResult.success) {
+        const o = formatZodErrors(validatedResult.error);
+        setPostError((prev) => {
+          const newObj = { ...prev, ...o };
+          return newObj;
+        });
+        toast('invalid inputs, please check...');
+        return;
+      }
+
       if (isEditing) {
         response = await fetch(`/api/posts/${id}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: post.title,
-            content: post.content,
-            published: post.published,
-            tags: post.tags,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body,
         });
       } else {
         response = await fetch('/api/posts', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: post.title,
-            content: post.content,
-            published: post.published,
-            tags: post.tags,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body,
         });
       }
 
       await response.json();
-
       toast.success(
         isEditing ? 'Post updated successfully!' : 'Post created successfully!'
       );
       router.push('/dashboard/posts');
     } catch (error) {
       console.error(error);
-      toast.error('Failed to save post');
+      toast.error('Failed to save post' + error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePreview = () => {
-    // Save draft and open preview
-    // TODO: preview
-    toast.info('Preview functionality coming soon!');
-  };
+  const handlePreview = () => toast.info('Preview functionality coming soon!');
 
   return (
     <div className="space-y-6">
@@ -169,7 +230,7 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
       >
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Title */}
+          {/* Title & Content */}
           <Card>
             <CardHeader>
               <CardTitle>Post Content</CardTitle>
@@ -183,10 +244,17 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
                 <Input
                   id="title"
                   value={post.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
+                  onChange={(e) => handleContentChange('title', e.target.value)}
                   placeholder="Enter a compelling title..."
                   required
                 />
+                <span
+                  className={`text-sm font-medium transition delay-150 duration-300 ease-in-out  text-red-500 opacity-0 ${
+                    postError.title && 'opacity-100 -translate-1'
+                  }`}
+                >
+                  {postError.title}
+                </span>
               </div>
 
               <div className="space-y-2">
@@ -195,12 +263,19 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
                   id="content"
                   value={post.content}
                   onChange={(e) =>
-                    setPost((prev) => ({ ...prev, content: e.target.value }))
+                    handleContentChange('content', e.target.value)
                   }
                   placeholder="Write your post content here... You can use Markdown!"
                   rows={20}
                   required
                 />
+                <span
+                  className={`text-sm font-medium transition delay-150 duration-300 ease-in-out  text-red-500 opacity-0 ${
+                    postError.content && 'opacity-100 -translate-1'
+                  }`}
+                >
+                  {postError.content}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -263,6 +338,14 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
                 }}
               />
               <div className="flex flex-wrap gap-2 mt-3">
+                <span
+                  className={`text-sm font-medium transition delay-150 duration-300 ease-in-out  text-red-500 opacity-0 ${
+                    postError.tags && 'opacity-100 -translate-1'
+                  }`}
+                >
+                  {postError.tags}
+                </span>
+
                 {post.tags?.map((tag, index) => (
                   <span
                     key={index}
@@ -287,7 +370,7 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
             </CardContent>
           </Card>
 
-          {/* Featured Image */}
+          {/* ✅ Featured Image (UploadThing integrated) */}
           <Card>
             <CardHeader>
               <CardTitle>Featured Image</CardTitle>
@@ -297,12 +380,41 @@ export default function PostEditor({ isEditing }: PostEditorProp) {
             </CardHeader>
             <CardContent>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Upload featured image
-                </p>
-                <Button variant="outline" size="sm">
-                  Choose Image
-                </Button>
+                {image ? (
+                  <div className="space-y-2">
+                    <picture>
+                      <img
+                        src={image.url}
+                        alt="Featured"
+                        className="mx-auto rounded-lg max-h-48 object-cover"
+                      />
+                    </picture>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setImage(null)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Upload featured image
+                    </p>
+                    <Button variant="outline" size="sm" disabled={isUploading}>
+                      <ImageIcon className="w-4 h-4 mr-2" />
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        ref={ImageInputRef}
+                      />
+                      {isUploading ? 'Uploading...' : 'Choose Image'}
+                    </Button>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>

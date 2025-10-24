@@ -63,6 +63,19 @@ export default async function BlogPage({
               ))}
             </div>
           )}
+
+          {post.featuredImage && (
+            <div className="my-3">
+              <picture>
+                <img
+                  src={post.featuredImage}
+                  alt={`title-image`}
+                  className="object-cover rounded-lg"
+                  loading="lazy"
+                />
+              </picture>
+            </div>
+          )}
         </div>
 
         {/* Blog Content */}

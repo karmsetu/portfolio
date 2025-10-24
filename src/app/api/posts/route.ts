@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
         slug: slugedTitle,
         published: body.published || false,
         tags: body.tags,
+        featuredImage: body.featuredImage,
       },
     });
     return NextResponse.json(post);
