@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { protectAPI } from '@/lib/api-auth';
+import { updateProjectSchema } from '@/lib/validators';
+import { deleteImage } from '@/utils/uploadthing-server';
 
 interface Params {
   params: {
@@ -36,24 +38,46 @@ export async function PUT(request: Request, { params }: Params) {
     const result = await protectAPI(request);
 
     if (result.error) return result.error;
-    const body = await request.json();
+
+    const { id } = params;
+
+    // Check if project exists
+    const existingProject = await prisma.project.findUnique({
+      where: { id },
+    });
+
+    if (!existingProject) {
+      return NextResponse.json({ error: 'project not found' }, { status: 404 });
+    }
+
+    const validatedSchema = updateProjectSchema.safeParse(await request.json());
+    if (!validatedSchema.success)
+      return NextResponse.json(
+        { error: validatedSchema.error, message: 'Invalid input' },
+        { status: 404 }
+      );
+    const body = validatedSchema.data;
+
+    // check if the image URL has changed
+    /* ? conditions: 
+           ? condition #1: previously project had an image, and now it doesn't
+           ? condition #2: previous project didn't had an image and now it does 
+           ? condition #3: previous project had different image then now
+          */
+    if (body.imageUrl! && existingProject.imageUrl) {
+      await deleteImage(existingProject.imageUrl);
+    } else if (
+      existingProject.imageUrl &&
+      body.imageUrl !== existingProject.imageUrl
+    ) {
+      await deleteImage(existingProject.imageUrl);
+    }
 
     const project = await prisma.project.update({
       where: {
-        id: params.id,
+        id,
       },
-      data: {
-        title: body.title,
-        description: body.description,
-        role: body.role,
-        tools: body.tools,
-        summary: body.summary,
-        outcome: body.outcome,
-        imageUrl: body.imageUrl,
-        githubUrl: body.githubUrl,
-        liveUrl: body.liveUrl,
-        updatedAt: new Date(),
-      },
+      data: { ...body, updatedAt: new Date() },
     });
 
     return NextResponse.json(project);
@@ -71,9 +95,26 @@ export async function DELETE(request: Request, { params }: Params) {
     const result = await protectAPI(request);
 
     if (result.error) return result.error;
+
+    const { id } = await params;
+
+    // Check if project exists
+    const existingProject = await prisma.project.findUnique({
+      where: { id },
+    });
+
+    if (!existingProject) {
+      return NextResponse.json({ error: 'project not found' }, { status: 404 });
+    }
+
+    // deleted image
+    if (existingProject.imageUrl) {
+      const imgDeletionResult = await deleteImage(existingProject.imageUrl);
+      if (!imgDeletionResult) throw new Error('Unable to delete Image');
+    }
     await prisma.project.delete({
       where: {
-        id: params.id,
+        id,
       },
     });
 

@@ -59,3 +59,5 @@ export const createProjectSchema = z.object({
   githubUrl: z.string().optional(),
   liveUrl: z.string().optional(),
 });
+
+export const updateProjectSchema = createProjectSchema.partial();

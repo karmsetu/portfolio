@@ -44,12 +44,13 @@ export function ProjectCard({
 
       {/* Image container - Full width on mobile, 40% on desktop */}
       <div className="relative lg:w-2/5 h-48 lg:h-auto overflow-hidden">
-        <Image
-          src={imageUrl || 'https://placehold.co/600x400'}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+        <picture>
+          <img
+            src={imageUrl || 'https://placehold.co/600x400'}
+            alt={title}
+            className="object-contain transition-transform duration-500 group-hover:scale-110"
+          />
+        </picture>
 
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4">
