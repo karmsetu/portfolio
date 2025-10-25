@@ -18,13 +18,13 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Text Section */}
           <div className="space-y-6 text-center lg:text-left ">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight font-titillium">
               I am{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+              <span className="bg-clip-text font-bold  text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
                 Karmsetu
               </span>
             </h1>
-            <p className="text-xl sm:text-2xl font-semibold text-muted-foreground">
+            <p className="text-xl sm:text-2xl font-semibold font-poppins  text-muted-foreground">
               A web and mobile app developer
             </p>
           </div>

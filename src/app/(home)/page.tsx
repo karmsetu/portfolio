@@ -85,7 +85,6 @@ export default async function Home() {
         </section>
       )}
 
-      <Separator className="border-t-2 border-black my-4" />
       {/* BLOG SECTION */}
       {Array.isArray(posts) && posts?.length > 0 && (
         <section className="container mx-auto px-4 md:px-6">
@@ -102,7 +101,7 @@ export default async function Home() {
         </section>
       )}
 
-      <Separator className="border-t-2 border-black my-4" />
+      <Separator className=" my-4" />
 
       {/* CONNECT SECTION */}
 
