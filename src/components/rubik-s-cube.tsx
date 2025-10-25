@@ -35,11 +35,7 @@ const COLORS = [
 ];
 
 const RubikCube: React.FC<{ toRotate: boolean }> = ({ toRotate }) => {
-  const [resetTrigger, setResetTrigger] = useState(0);
-
-  const handleResetView = () => {
-    setResetTrigger((prev) => prev + 1);
-  };
+  const [resetTrigger] = useState(0);
 
   return (
     <div className="h-full w-full ">

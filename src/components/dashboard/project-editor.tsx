@@ -4,7 +4,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createProject, updateProject } from '@/lib/api/projects';
-import { CreateProjectInput, Project } from '@/types';
+import { CreateProjectInput } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
