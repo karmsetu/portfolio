@@ -1,9 +1,10 @@
 import { BlogList } from '@/components/blog-card';
 import { ConnectSection } from '@/components/connect-section';
-import Greetings from '@/components/greetings';
 import { ProjectCard } from '@/components/project-card';
 import { Underline } from '@/components/ui/underline';
 import { getPosts, getProjects } from '@/lib/server/actions';
+import HeroSection from './_components/hero-section';
+import { Separator } from '@/components/ui/separator';
 
 export default async function Home() {
   const posts = await getPosts();
@@ -11,7 +12,8 @@ export default async function Home() {
   return (
     <main className="space-y-20 md:space-y-32 pb-20">
       {/* HERO SECTION */}
-      <section className="min-h-screen flex items-center">
+      <HeroSection />
+      {/* <section className="min-h-screen flex items-center">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
@@ -28,15 +30,12 @@ export default async function Home() {
             </div>
             <div className="flex justify-center lg:justify-end">
               <div className="w-full max-w-md h-64 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-2xl flex items-center justify-center border">
-                <p className="text-muted-foreground">
-                  Your awesome visual here
-                </p>
-                {/* Replace with <Bird /> or <Globe /> component */}
+                <AssetLoader />
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ABOUT SECTION */}
       <section className="container  px-4 md:px-6">
@@ -86,8 +85,9 @@ export default async function Home() {
         </section>
       )}
 
+      <Separator className="border-t-2 border-black my-4" />
       {/* BLOG SECTION */}
-      {Array.isArray(posts) && posts?.length && (
+      {Array.isArray(posts) && posts?.length > 0 && (
         <section className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             <div className="space-y-2 mb-8">
@@ -102,7 +102,10 @@ export default async function Home() {
         </section>
       )}
 
+      <Separator className="border-t-2 border-black my-4" />
+
       {/* CONNECT SECTION */}
+
       <ConnectSection />
     </main>
   );
