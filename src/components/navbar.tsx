@@ -32,11 +32,13 @@ export default function Nav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`transition-all duration-200 hover:text-blue-400 ${
-                pathname === item.href
-                  ? 'text-blue-400 font-medium'
-                  : 'text-foreground/80'
-              }`}
+              className={`transition-all duration-200 hover:text-blue-400 
+                font-bold
+                ${
+                  pathname === item.href
+                    ? 'text-blue-400 font-medium'
+                    : 'text-foreground/80'
+                }`}
             >
               {item.label}
             </Link>
