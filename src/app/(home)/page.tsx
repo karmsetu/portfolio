@@ -77,7 +77,7 @@ export default async function Home() {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 200}ms` }}
                 >
-                  <ProjectCard {...project} />
+                  <ProjectCard {...project} isShowcase={true} />
                 </div>
               ))}
             </div>

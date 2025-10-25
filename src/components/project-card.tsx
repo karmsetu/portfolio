@@ -20,6 +20,9 @@ interface ProjectCardProps {
   githubUrl?: string | null;
   liveUrl?: string | null;
   caseStudyUrl?: string | null;
+
+  // showing outlink icon
+  isShowcase?: boolean;
 }
 
 export function ProjectCard({
@@ -32,6 +35,7 @@ export function ProjectCard({
   githubUrl,
   liveUrl,
   caseStudyUrl,
+  isShowcase = true,
 }: ProjectCardProps) {
   return (
     <Card
@@ -91,7 +95,9 @@ export function ProjectCard({
               </h3>
               <p className="text-sm text-muted-foreground mt-1">{role}</p>
             </div>
-            <ArrowUpRight className="w-5 h-5 text-muted-foreground transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-primary transition-all duration-300 flex-shrink-0" />
+            {isShowcase && (
+              <ArrowUpRight className="w-5 h-5 text-muted-foreground transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-primary transition-all duration-300 flex-shrink-0" />
+            )}
           </div>
         </CardHeader>
 

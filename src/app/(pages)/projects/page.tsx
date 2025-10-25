@@ -56,7 +56,7 @@ export default async function ProjectsPage() {
                   animationFillMode: 'forwards',
                 }}
               >
-                <ProjectCard {...project} />
+                <ProjectCard {...project} isShowcase={false} />
               </div>
             ))}
           </div>
