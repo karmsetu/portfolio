@@ -6,16 +6,17 @@ import { updateProjectSchema } from '@/lib/validators';
 import { deleteImage } from '@/utils/uploadthing-server';
 
 interface Params {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: Request, { params }: Params) {
   try {
+    const { id } = await params;
     const project = await prisma.project.findUnique({
       where: {
-        id: params.id,
+        id,
       },
     });
 
@@ -39,7 +40,7 @@ export async function PUT(request: Request, { params }: Params) {
 
     if (result.error) return result.error;
 
-    const { id } = params;
+    const { id } = await params;
 
     // Check if project exists
     const existingProject = await prisma.project.findUnique({

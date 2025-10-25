@@ -6,13 +6,13 @@ import { protectAPI } from '@/lib/api-auth';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const result = await protectAPI(request);
 
     if (result.error) return result.error;
-    const { id } = params;
+    const { id } = await params;
 
     // Validate ID
     if (!id) {

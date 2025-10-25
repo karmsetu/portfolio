@@ -7,9 +7,9 @@ import { protectAPI } from '@/lib/api-auth';
 import { deleteImage } from '@/utils/uploadthing-server';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
