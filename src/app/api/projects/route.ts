@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { createProjectSchema } from '@/lib/validators';
 import { protectAPI } from '@/lib/api-auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   try {
@@ -52,6 +53,9 @@ export async function POST(request: Request) {
         liveUrl: body.liveUrl,
       },
     });
+
+    revalidatePath('/');
+    revalidatePath('/projects');
 
     return NextResponse.json(project, { status: 201 });
   } catch (error) {

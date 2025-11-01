@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { protectAPI } from '@/lib/api-auth';
 import { updateProjectSchema } from '@/lib/validators';
 import { deleteImage } from '@/utils/uploadthing-server';
+import { revalidatePath } from 'next/cache';
 
 interface Params {
   params: Promise<{
@@ -23,6 +24,9 @@ export async function GET(request: Request, { params }: Params) {
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
+
+    revalidatePath('/');
+    revalidatePath('/projects');
 
     return NextResponse.json(project);
   } catch (error) {
@@ -118,6 +122,9 @@ export async function DELETE(request: Request, { params }: Params) {
         id,
       },
     });
+
+    revalidatePath('/');
+    revalidatePath('/projects');
 
     return NextResponse.json({ message: 'Project deleted successfully' });
   } catch (error) {

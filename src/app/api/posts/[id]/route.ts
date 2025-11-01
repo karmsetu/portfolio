@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import slugger from 'slug';
 import { protectAPI } from '@/lib/api-auth';
 import { deleteImage } from '@/utils/uploadthing-server';
+import { revalidatePath } from 'next/cache';
 
 interface RouteParams {
   params: Promise<{
@@ -87,6 +88,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       },
     });
 
+    revalidatePath('/');
+    revalidatePath('/blog');
+
     return NextResponse.json({ post });
   } catch (error) {
     console.error('Error updating post:', error);
@@ -134,6 +138,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await prisma.post.delete({
       where: { id },
     });
+
+    revalidatePath('/');
+    revalidatePath('/blog');
 
     return NextResponse.json({
       success: true,

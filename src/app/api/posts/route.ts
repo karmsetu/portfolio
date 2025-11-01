@@ -3,6 +3,7 @@ import { protectAPI } from '@/lib/api-auth';
 import { prisma } from '@/lib/db';
 import { sanitizeMarkdown } from '@/lib/sanitize';
 import { createPostSchema } from '@/lib/validators';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import slug from 'slug';
 
@@ -46,6 +47,9 @@ export async function POST(request: NextRequest) {
         featuredImage: body.featuredImage,
       },
     });
+
+    revalidatePath('/');
+    revalidatePath('/blog');
     return NextResponse.json(post);
   } catch (error) {
     console.error(error);
