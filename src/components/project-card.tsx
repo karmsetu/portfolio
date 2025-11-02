@@ -46,12 +46,12 @@ export function ProjectCard({
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       {/* Image container - Full width on mobile, 40% on desktop */}
-      <div className="relative lg:w-2/5 h-48 lg:h-auto overflow-hidden">
+      <div className="relative lg:w-2/5 h-48 lg:h-auto overflow-hidden flex justify-center items-center">
         <picture>
           <img
             src={imageUrl || 'https://placehold.co/600x400'}
             alt={title}
-            className="object-contain transition-transform duration-500 group-hover:scale-110"
+            className="object-fit transition-transform duration-500 group-hover:scale-110"
           />
         </picture>
 

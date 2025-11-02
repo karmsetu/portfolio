@@ -63,7 +63,7 @@ export default async function Home() {
 
       {/* PROJECTS SECTION */}
       {Array.isArray(projects) && projects?.length > 0 && (
-        <section className="container mx-auto px-4 md:px-6">
+        <section className="container mx-auto px-4 md:px-6 mb-52">
           <div className="max-w-6xl mx-auto">
             <div className="space-y-2 mb-12">
               <h2 className="text-3xl font-bold">My Projects</h2>
